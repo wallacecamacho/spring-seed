@@ -104,5 +104,9 @@ Entre na pasta raiz onde foi realizado o clone do projeto onde está localizado 
 - http://localhost:9000/hystrix - Hystrix Dashboard (Turbine stream link: `http://turbine-stream-service:8080/turbine/turbine.stream`)
 - http://localhost:15672 - RabbitMq management (default login/password: guest/guest)
 
+#### Front - Angular 7
+Usei o angular 7 para realizar uma página de cadastro de forma simples para que fosse realizada as nossas chamadas ao endpoint dos serviços example-service.
+![captura de tela de 2018-12-11 12-17-52](https://user-images.githubusercontent.com/1315080/49806428-e9604400-fd3e-11e8-80d2-9e99a92dcda2.png)
+
 #### Notes
 Além disso, o mecanismo de Descoberta de Serviço precisa de algum tempo após a inicialização de todos os aplicativos. Qualquer serviço não está disponível para descoberta pelos clientes até que a instância, o servidor Eureka e o cliente tenham todos os mesmos metadados em seu cache local.
