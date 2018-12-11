@@ -42,8 +42,8 @@ spring:
 
 ### API Gateway
 
-Geralmente, uma abordagem muito melhor é usar o API Gateway. É um ponto de entrada único no sistema, usado para manipular solicitações roteando-as para o serviço de back-end apropriado ou chamando vários serviços de back-end e [agregando os resultados] (http://techblog.netflix.com/2013/01/optimizing -netflix-api.html). Além disso, ele pode ser usado para autenticação, teste de estresse, migração de serviço, manipulação de resposta estática, gerenciamento de tráfego ativo.
-Netflix opensourced [exemplo de abordagem](http://techblog.netflix.com/2013/06/announcing-zuul-edge-service-in-cloud.html), e com Spring Cloud pode ser habilitado com uma anotação `@EnableZuulProxy`. No projeto, usei Zuul para armazendas conteúdo stático com o build do angular 7 (ui application) e rotear as requisições para os apropriados serviços. Exemplo de configuração de roteamento:
+É o ponto de entrada único no sistema, usado para manipular solicitações roteando-as para o serviço de back-end apropriado ou chamando vários serviços de back-end (http://techblog.netflix.com/2013/01/optimizing-netflix-api.html). Além disso, ele pode ser usado para autenticação, teste de estresse, migração de serviço, manipulação de resposta estática, gerenciamento de tráfego ativo.
+Netflix opensourced [exemplo de abordagem](http://techblog.netflix.com/2013/06/announcing-zuul-edge-service-in-cloud.html), e com Spring Cloud pode ser habilitado com uma anotação `@EnableZuulProxy`. No projeto, usei Zuul para armazendar conteúdo stático com o build do angular 7 (ui application) e rotear as requisições para os apropriados serviços. Exemplo de configuração de roteamento:
 
 ```yml
 zuul:
@@ -68,9 +68,7 @@ spring:
     name: notification-service
 ```
 
-Now, on application startup, it will register with Eureka Server and provide meta-data, such as host and port, health indicator URL, home page etc. Eureka receives heartbeat messages from each instance belonging to a service. If the heartbeat fails over a configurable timetable, the instance will be removed from the registry.
-
-Also, Eureka provides a simple interface, where you can track running services and a number of available instances: `http://localhost:8761`
+Eureka fornece uma interface simples, onde você pode rastrear serviços em execução e várias instâncias disponíveis: `http://localhost:8761`
 
 ### Load balancer, Circuit breaker and Http client
 
@@ -144,10 +142,6 @@ The logs are as follows, notice the `[appname,traceId,spanId,exportable]` entrie
 - *`traceId`*: This is an ID that is assigned to a single request, job, or action
 - *`spanId`*: The ID of a specific operation that took place
 - *`exportable`*: Whether the log should be exported to [Zipkin](https://zipkin.io/)
-
-## Security
-
-An advanced security configuration is beyond the scope of this proof-of-concept project. For a more realistic simulation of a real system, consider to use https, JCE keystore to encrypt Microservices passwords and Config server properties content (see [documentation](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_security) for details).
 
 #### Antes de começar
 - Instale Docker e Docker Compose. [Config Docker](https://www.digitalocean.com/community/tutorials/como-instalar-e-usar-o-docker-no-ubuntu-16-04-pt)
