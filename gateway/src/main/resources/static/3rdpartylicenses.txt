@@ -300,6 +300,9 @@ MIT
 @angular/router
 MIT
 
+@angular/animations
+MIT
+
 @angular/cdk
 MIT
 The MIT License
@@ -349,8 +352,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-
-@angular/material/table
 
 @angular/flex-layout
 MIT
@@ -582,15 +583,12 @@ THE SOFTWARE.
 >>>>>>> Initial commit
 
 
-@angular/animations
-MIT
-
-@angular/material/icon
-
 @angular/forms
 MIT
 
 @angular/material/form-field
+
+@angular/material/icon
 
 ngx-mask
 MIT
@@ -623,13 +621,17 @@ SOFTWARE.
 
 @angular/material/button
 
+@angular/material/table
+
+@angular/material/tooltip
+
+@angular/material/paginator
+
 @angular/material/dialog
 
 @angular/material/datepicker
 
 @angular/material/snack-bar
-
-@angular/material/tooltip
 
 @angular/material/divider
 
