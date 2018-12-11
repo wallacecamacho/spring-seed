@@ -50,7 +50,7 @@ Todas as configurações que começam com `/contas` será roteada para o determi
 
 Com Spring Boot, conseguimos de forma fácil usar o Eureka `spring-cloud-starter-eureka-server` como dependência, e a anotação`@EnableEurekaServer` e uma simples configuração.
 
-Client support enabled with `@EnableDiscoveryClient` annotation an `bootstrap.yml` with application name:
+Cliente de descoberta com a anotação `@EnableDiscoveryClient` e o arquivo `bootstrap.yml`:
 ``` yml
 spring:
   application:
