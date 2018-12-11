@@ -19,7 +19,7 @@ Esta é uma aplicação de prova de conceito, que demonstra o [Padrão de Arquit
 
 Springseed tem um simples exemplo de serviço. Serviço independente utilizando um banco de dados mongo para um serviço específico.
 
-<img width="380" alt="Functional services" src="https://user-images.githubusercontent.com/1315080/49801704-08a4a480-fd32-11e8-92a3-1a5bcbac6493.png">
+<img alt="Functional services" src="https://user-images.githubusercontent.com/1315080/49801704-08a4a480-fd32-11e8-92a3-1a5bcbac6493.png">
 
 ## Infrastructure services
 There's a bunch of common patterns in distributed systems, which could help us to make described core services work. [Spring cloud](http://projects.spring.io/spring-cloud/) provides powerful tools that enhance Spring Boot applications behaviour to implement those patterns. I'll cover them briefly.
