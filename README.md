@@ -70,7 +70,7 @@ spring:
 
 Eureka fornece uma interface simples, onde você pode rastrear serviços em execução e várias instâncias disponíveis: `http://localhost:8761`
 
-### Load balancer, Circuit breaker and Http client
+### Load balancer, Circuit breaker e Http client
 
 Netflix OSS provides another great set of tools. 
 
@@ -108,21 +108,20 @@ public interface StatisticsServiceClient {
 
 ### Distributed tracing
 
-Analyzing problems in distributed systems can be difficult, for example, tracing requests that propagate from one microservice to another. It can be quite a challenge to try to find out how a request travels through the system, especially if you don't have any insight into the implementation of a microservice. Even when there is logging, it is hard to tell which action correlates to a single request.
+A análise de problemas em sistemas distribuídos pode ser difícil, por exemplo, solicitações de rastreamento que se propagam de um microsserviço para outro.
 
-[Spring Cloud Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) solves this problem by providing support for distributed tracing. It adds two types of IDs to the logging: traceId and spanId. The spanId represents a basic unit of work, for example sending an HTTP request. The traceId contains a set of spans forming a tree-like structure. For example, with a distributed big-data store, a trace might be formed by a PUT request. Using traceId and spanId for each operation we know when and where our application is as it processes a request, making reading our logs much easier. 
-
-The logs are as follows, notice the `[appname,traceId,spanId,exportable]` entries from the Slf4J MDC:
+[Spring Cloud Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) resolve esse problema fornecendo suporte para rastreamento distribuído. Ele adiciona dois tipos de ID ao logging: traceId e spanId.
+Os logs seguem o seguinte padrão `[appname,traceId,spanId,exportable]` do Slf4J MDC:
 
 ```text
-2018-07-26 23:13:49.381  WARN [gateway,3216d0de1384bb4f,3216d0de1384bb4f,false] 2999 --- [nio-4000-exec-1] o.s.c.n.z.f.r.s.AbstractRibbonCommand    : The Hystrix timeout of 20000ms for the command account-service is set lower than the combination of the Ribbon read and connect timeout, 80000ms.
-2018-07-26 23:13:49.562  INFO [account-service,3216d0de1384bb4f,404ff09c5cf91d2e,false] 3079 --- [nio-6000-exec-1] c.p.account.service.AccountServiceImpl   : new account has been created: test
+2018-07-26 23:13:49.381  WARN [gateway,3216d0de1384bb4f,3216d0de1384bb4f,false] 2999 --- [nio-4000-exec-1] o.s.c.n.z.f.r.s.AbstractRibbonCommand    : The Hystrix timeout of 20000ms for the command conta-service is set lower than the combination of the Ribbon read and connect timeout, 80000ms.
+2018-07-26 23:13:49.562  INFO [example-service,3216d0de1384bb4f,404ff09c5cf91d2e,false] 3079 --- [nio-6000-exec-1] c.p.conta.service.AccountServiceImpl   : nova conta foi criada: test
 ```
 
-- *`appname`*: The name of the application that logged the span from the property `spring.application.name`
-- *`traceId`*: This is an ID that is assigned to a single request, job, or action
-- *`spanId`*: The ID of a specific operation that took place
-- *`exportable`*: Whether the log should be exported to [Zipkin](https://zipkin.io/)
+- *`appname`*: O nome da aplicação que será logada `spring.application.name`
+- *`traceId`*: ID que é atribuído a uma request
+- *`spanId`*: ID de uma específica operação
+- *`exportable`*: se o log deve ser exportado para [Zipkin](https://zipkin.io/)
 
 #### Antes de começar
 - Instale Docker e Docker Compose. [Config Docker](https://www.digitalocean.com/community/tutorials/como-instalar-e-usar-o-docker-no-ubuntu-16-04-pt)
