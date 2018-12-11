@@ -27,49 +27,17 @@ There's a bunch of common patterns in distributed systems, which could help us t
 In this project, I use `native profile`, which simply loads config files from the local classpath. You can see `shared` directory in [Config service resources](https://github.com/sqshq/PiggyMetrics/tree/master/config/src/main/resources). Now, when Notification-service requests it's configuration, Config service responses with `shared/notification-service.yml` and `shared/application.yml` (which is shared between all client applications).
 
 ##### Client side usage
-Just build Spring Boot application with `spring-cloud-starter-config` dependency, autoconfiguration will do the rest.
+Utilizando Spring Boot application com `spring-cloud-starter-config` dependência
 
-Now you don't need any embedded properties in your application. Just provide `bootstrap.yml` with application name and Config service url:
+Apenas forneça `bootstrap.yml` com o nome da aplicação e com a url do Config service:
 ```yml
 spring:
   application:
-    name: notification-service
+    name: example-service
   cloud:
     config:
       uri: http://config:8888
       fail-fast: true
-```
-
-##### With Spring Cloud Config, you can change app configuration dynamically. 
-For example, [EmailService bean](https://github.com/sqshq/PiggyMetrics/blob/master/notification-service/src/main/java/com/piggymetrics/notification/service/EmailServiceImpl.java) was annotated with `@RefreshScope`. That means, you can change e-mail text and subject without rebuild and restart Notification service application.
-
-First, change required properties in Config server. Then, perform refresh request to Notification service:
-`curl -H "Authorization: Bearer #token#" -XPOST http://127.0.0.1:8000/notifications/refresh`
-
-Also, you could use Repository [webhooks to automate this process](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_push_notifications_and_spring_cloud_bus)
-
-##### Notes
-- There are some limitations for dynamic refresh though. `@RefreshScope` doesn't work with `@Configuration` classes and doesn't affect `@Scheduled` methods
-- `fail-fast` property means that Spring Boot application will fail startup immediately, if it cannot connect to the Config Service.
-- There are significant [security notes](https://github.com/sqshq/PiggyMetrics#security) below
-
-### Auth service
-Authorization responsibilities are completely extracted to separate server, which grants [OAuth2 tokens](https://tools.ietf.org/html/rfc6749) for the backend resource services. Auth Server is used for user authorization as well as for secure machine-to-machine communication inside a perimeter.
-
-In this project, I use [`Password credentials`](https://tools.ietf.org/html/rfc6749#section-4.3) grant type for users authorization (since it's used only by native PiggyMetrics UI) and [`Client Credentials`](https://tools.ietf.org/html/rfc6749#section-4.4) grant for microservices authorization.
-
-Spring Cloud Security provides convenient annotations and autoconfiguration to make this really easy to implement from both server and client side. You can learn more about it in [documentation](http://cloud.spring.io/spring-cloud-security/spring-cloud-security.html) and check configuration details in [Auth Server code](https://github.com/sqshq/PiggyMetrics/tree/master/auth-service/src/main/java/com/piggymetrics/auth).
-
-From the client side, everything works exactly the same as with traditional session-based authorization. You can retrieve `Principal` object from request, check user's roles and other stuff with expression-based access control and `@PreAuthorize` annotation.
-
-Each client in PiggyMetrics (account-service, statistics-service, notification-service and browser) has a scope: `server` for backend services, and `ui` - for the browser. So we can also protect controllers from external access, for example:
-
-``` java
-@PreAuthorize("#oauth2.hasScope('server')")
-@RequestMapping(value = "accounts/{name}", method = RequestMethod.GET)
-public List<DataPoint> getStatisticsByAccountName(@PathVariable String name) {
-	return statisticsService.findByAccountName(name);
-}
 ```
 
 ### API Gateway
