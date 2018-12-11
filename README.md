@@ -106,6 +106,11 @@ Entre na pasta raiz onde foi realizado o clone do projeto onde está localizado 
 
 #### Front - Angular 7
 Usei o angular 7 para realizar uma página de cadastro de forma simples para que fosse realizada as nossas chamadas ao endpoint dos serviços example-service.
+
+Foram usados
+- Material angular
+- Rxjs, Subjects e Observables para realizar chamadas de forma reativas ao nosso cadastro.
+
 ![captura de tela de 2018-12-11 12-17-52](https://user-images.githubusercontent.com/1315080/49806428-e9604400-fd3e-11e8-80d2-9e99a92dcda2.png)
 
 #### Notes
