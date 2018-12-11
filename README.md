@@ -14,6 +14,7 @@ Springseed tem um simples exemplo de serviço. Serviço independente utilizando 
 
 ## Infraestrutura
 
+
 ##### Disponibilizando serviços
 Utilizando Spring Boot application com `spring-cloud-starter-config` dependência
 
