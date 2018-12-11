@@ -13,11 +13,13 @@ services:
         max-file: "10"
 
   config:
+    build:
+      context: ./config
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-config
     restart: "no"
     logging:
       options:
@@ -25,11 +27,13 @@ services:
         max-file: "10"
 
   registry:
+    build:
+      context: ./registry
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-registry
     restart: "no"
     depends_on:
       config:
@@ -42,11 +46,13 @@ services:
         max-file: "10"
 
   gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-gateway
     restart: "no"
     depends_on:
       config:
@@ -58,131 +64,28 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  auth-service:
-    env_file:
-      - .env
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      NOTIFICATION_SERVICE_PASSWORD: $NOTIFICATION_SERVICE_PASSWORD
-      STATISTICS_SERVICE_PASSWORD: $STATISTICS_SERVICE_PASSWORD
-      ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-auth-service
-    restart: "no"
-    depends_on:
-      config:
-        condition: service_healthy
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  auth-mongodb:
-    env_file:
-      - .env
-    environment:
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb
-    restart: "no"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  account-service:
-    env_file:
-      - .env
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-account-service
-    restart: "no"
-    depends_on:
-      config:
-        condition: service_healthy
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
   account-mongodb:
-    env_file:
-      - .env
-    environment:
-      INIT_DUMP: account-service-dump.js
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb
-    restart: "no"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  statistics-service:
-    env_file:
-      - .env
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-      STATISTICS_SERVICE_PASSWORD: $STATISTICS_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-statistics-service
-    restart: "no"
-    depends_on:
-      config:
-        condition: service_healthy
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  statistics-mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       MONGODB_PASSWORD: $MONGODB_PASSWORD
-    image: sqshq/piggymetrics-mongodb
     restart: "no"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  notification-service:
-    env_file:
-      - .env
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
-      NOTIFICATION_SERVICE_PASSWORD: $NOTIFICATION_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-notification-service
-    restart: "no"
-    depends_on:
-      config:
-        condition: service_healthy
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  notification-mongodb:
-    env_file:
-      - .env
-    image: sqshq/piggymetrics-mongodb
-    restart: "no"
-    environment:
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
   monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-monitoring
     restart: "no"
     depends_on:
       config:
@@ -195,11 +98,13 @@ services:
         max-file: "10"
 
   turbine-stream-service:
+    build:
+      context: ./turbine-stream-service
+      dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-    image: sqshq/piggymetrics-turbine-stream-service
     restart: "no"
     depends_on:
       config:
@@ -210,3 +115,26 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+
+  example-service:
+    build:
+      context: ./example-service
+      dockerfile: Dockerfile
+    ports:
+      - 6000:6000
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+
