@@ -4,7 +4,7 @@ spring:
       host: account-mongodb
       username: user
       password: ${MONGODB_PASSWORD}
-      database: piggymetrics
+      database: springseed
       port: 27017
 
 server:

@@ -21,43 +21,43 @@ after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
 
   # CONFIG SERVICE
-  - export CONFIG=wallacecamacho/piggymetrics-config
+  - export CONFIG=wallacecamacho/springseed-config
   - docker build -t $CONFIG:$COMMIT ./config
   - docker tag $CONFIG:$COMMIT $CONFIG:$TAG
   - docker push $CONFIG
 
   # REGISTRY
-  - export REGISTRY=wallacecamacho/piggymetrics-registry
+  - export REGISTRY=wallacecamacho/springseed-registry
   - docker build -t $REGISTRY:$COMMIT ./registry
   - docker tag $REGISTRY:$COMMIT $REGISTRY:$TAG
   - docker push $REGISTRY
 
   # GATEWAY
-  - export GATEWAY=wallacecamacho/piggymetrics-gateway
+  - export GATEWAY=wallacecamacho/springseed-gateway
   - docker build -t $GATEWAY:$COMMIT ./gateway
   - docker tag $GATEWAY:$COMMIT $GATEWAY:$TAG
   - docker push $GATEWAY
 
   # ACCOUNT SERVICE
-  - export ACCOUNT_SERVICE=wallacecamacho/piggymetrics-account-service
+  - export ACCOUNT_SERVICE=wallacecamacho/springseed-account-service
   - docker build -t $ACCOUNT_SERVICE:$COMMIT ./account-service
   - docker tag $ACCOUNT_SERVICE:$COMMIT $ACCOUNT_SERVICE:$TAG
   - docker push $ACCOUNT_SERVICE
 
   # MONITORING
-  - export MONITORING=wallacecamacho/piggymetrics-monitoring
+  - export MONITORING=wallacecamacho/springseed-monitoring
   - docker build -t $MONITORING:$COMMIT ./monitoring
   - docker tag $MONITORING:$COMMIT $MONITORING:$TAG
   - docker push $MONITORING
 
   # TURBINE STREAM SERVICE
-  - export TURBINE=wallacecamacho/piggymetrics-turbine-stream-service
+  - export TURBINE=wallacecamacho/springseed-turbine-stream-service
   - docker build -t $TURBINE:$COMMIT ./turbine-stream-service
   - docker tag $TURBINE:$COMMIT $TURBINE:$TAG
   - docker push $TURBINE
 
   # MONGO DB
-  - export MONGO_DB=wallacecamacho/piggymetrics-mongodb
+  - export MONGO_DB=wallacecamacho/springseed-mongodb
   - docker build -t $MONGO_DB:$COMMIT ./mongodb
   - docker tag $MONGO_DB:$COMMIT $MONGO_DB:$TAG
   - docker push $MONGO_DB

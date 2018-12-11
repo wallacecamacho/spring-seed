@@ -10,8 +10,8 @@
 	<name>example-service</name>
 
 	<parent>
-		<groupId>com.piggymetrics</groupId>
-		<artifactId>piggymetrics</artifactId>
+		<groupId>com.springseed</groupId>
+		<artifactId>springseed</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
