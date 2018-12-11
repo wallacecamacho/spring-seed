@@ -12,9 +12,6 @@ With a pretty neat user interface, by the way.
 
 Esta é uma aplicação de prova de conceito, que demonstra o [Padrão de Arquitetura de Microserviços](http://martinfowler.com/microservices/) usando Spring Boot, Spring Cloud e Docker. Com uma interface simples em angular 7.
 
-![](https://cloud.githubusercontent.com/assets/6069066/13864234/442d6faa-ecb9-11e5-9929-34a9539acde0.png)
-![Piggy Metrics](https://cloud.githubusercontent.com/assets/6069066/13830155/572e7552-ebe4-11e5-918f-637a49dff9a2.gif)
-
 ## Functional services
 
 Springseed tem um simples exemplo de serviço. Serviço independente utilizando um banco de dados mongo para um serviço específico.
