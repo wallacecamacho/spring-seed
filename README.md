@@ -6,6 +6,21 @@
 
 Esta é uma aplicação de prova de conceito, que demonstra o [Padrão de Arquitetura de Microserviços](http://martinfowler.com/microservices/) usando Spring Boot, Spring Cloud e Docker. Com uma interface simples em angular 7.
 
+Foram utilizados os serviços Spring Cloud para disponibilizar um arquitetura para utilização da plataforma Docker, Spring e um Front End baseado em javascript como Angular 7.
+
+Componentes utilizados:
+
+- Spring Cloud
+- Eureka
+- Hystrix
+- Zuul
+- Spring Security (utilizado para dar permissão aos endpoints)
+- Angular 7
+- MongoDB
+  
+Através de uma interface de cadastro e pesquisa utilizado para realizar inserts no banco de dados MongoDB, foram realizadas configurações necessárias para mergulhar no conceito de aplicações baseadas na arquitetura de microserviços e realizar uma arquitetura de referência básica
+para utilização de um modelo que pode ser utilizado em ambientes corporativos de desenvolvimento.
+
 ## Functional services
 
 Springseed tem um simples exemplo de serviço. Serviço independente utilizando um banco de dados mongo para um serviço específico.
