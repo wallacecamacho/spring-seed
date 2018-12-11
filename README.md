@@ -97,6 +97,12 @@ Os logs seguem o seguinte padrão `[appname,traceId,spanId,exportable]` do Slf4J
 Desta forma todas as imagens utilizadas serão baixado do docker hub.
 Entre na pasta raiz onde foi realizado o clone do projeto onde está localizado o arquivo `docker-compose.yml` em seguida para construir as imagens `docker-compose build` e em seguinte `docker-compose up`
 
+#### Executando o springseed
+- Execute o seguinte comando `docker-compose build`
+- Seguinte `docker-compose up`
+- abrir o navegador no `http://localhost`
+
+
 
 #### Importantes endpoints
 - http://localhost:80 - Gateway
