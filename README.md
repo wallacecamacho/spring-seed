@@ -26,7 +26,7 @@ There's a bunch of common patterns in distributed systems, which could help us t
 
 In this project, I use `native profile`, which simply loads config files from the local classpath. You can see `shared` directory in [Config service resources](https://github.com/sqshq/PiggyMetrics/tree/master/config/src/main/resources). Now, when Notification-service requests it's configuration, Config service responses with `shared/notification-service.yml` and `shared/application.yml` (which is shared between all client applications).
 
-##### Client side usage
+##### Disponibilizando serviços
 Utilizando Spring Boot application com `spring-cloud-starter-config` dependência
 
 Apenas forneça `bootstrap.yml` com o nome da aplicação e com a url do Config service:
@@ -41,33 +41,25 @@ spring:
 ```
 
 ### API Gateway
-As you can see, there are three core services, which expose external API to client. In a real-world systems, this number can grow very quickly as well as whole system complexity. Actually, hundreds of services might be involved in rendering of one complex webpage.
 
-In theory, a client could make requests to each of the microservices directly. But obviously, there are challenges and limitations with this option, like necessity to know all endpoints addresses, perform http request for each peace of information separately, merge the result on a client side. Another problem is non web-friendly protocols which might be used on the backend.
-
-Usually a much better approach is to use API Gateway. It is a single entry point into the system, used to handle requests by routing them to the appropriate backend service or by invoking multiple backend services and [aggregating the results](http://techblog.netflix.com/2013/01/optimizing-netflix-api.html). Also, it can be used for authentication, insights, stress and canary testing, service migration, static response handling, active traffic management.
-
-Netflix opensourced [such an edge service](http://techblog.netflix.com/2013/06/announcing-zuul-edge-service-in-cloud.html), and now with Spring Cloud we can enable it with one `@EnableZuulProxy` annotation. In this project, I use Zuul to store static content (ui application) and to route requests to appropriate microservices. Here's a simple prefix-based routing configuration for Notification service:
+Geralmente, uma abordagem muito melhor é usar o API Gateway. É um ponto de entrada único no sistema, usado para manipular solicitações roteando-as para o serviço de back-end apropriado ou chamando vários serviços de back-end e [agregando os resultados] (http://techblog.netflix.com/2013/01/optimizing -netflix-api.html). Além disso, ele pode ser usado para autenticação, teste de estresse, migração de serviço, manipulação de resposta estática, gerenciamento de tráfego ativo.
+Netflix opensourced [exemplo de abordagem](http://techblog.netflix.com/2013/06/announcing-zuul-edge-service-in-cloud.html), e com Spring Cloud pode ser habilitado com uma anotação `@EnableZuulProxy`. No projeto, usei Zuul para armazendas conteúdo stático com o build do angular 7 (ui application) e rotear as requisições para os apropriados serviços. Exemplo de configuração de roteamento:
 
 ```yml
 zuul:
   routes:
     notification-service:
-        path: /notifications/**
-        serviceId: notification-service
+        path: /contas/**
+        serviceId: example-service
         stripPrefix: false
 
 ```
 
-That means all requests starting with `/notifications` will be routed to Notification service. There is no hardcoded address, as you can see. Zuul uses [Service discovery](https://github.com/sqshq/PiggyMetrics/blob/master/README.md#service-discovery) mechanism to locate Notification service instances and also [Circuit Breaker and Load Balancer](https://github.com/sqshq/PiggyMetrics/blob/master/README.md#http-client-load-balancer-and-circuit-breaker), described below.
+Todas as configurações que começam com `/contas` será roteada para o determinado serviço. Zuul usa o serviço de descoberta [Service discovery](https://github.com/sqshq/PiggyMetrics/blob/master/README.md#service-discovery) para localizar a intância definida.
 
-### Service discovery
+### Service discovery (Serviço de descoberta)
 
-Another commonly known architecture pattern is Service discovery. It allows automatic detection of network locations for service instances, which could have dynamically assigned addresses because of auto-scaling, failures and upgrades.
-
-The key part of Service discovery is Registry. I use Netflix Eureka in this project. Eureka is a good example of the client-side discovery pattern, when client is responsible for determining locations of available service instances (using Registry server) and load balancing requests across them.
-
-With Spring Boot, you can easily build Eureka Registry with `spring-cloud-starter-eureka-server` dependency, `@EnableEurekaServer` annotation and simple configuration properties.
+Com Spring Boot, conseguimos de forma fácil usar o Eureka `spring-cloud-starter-eureka-server` como dependência, e a anotação`@EnableEurekaServer` e uma simples configuração.
 
 Client support enabled with `@EnableDiscoveryClient` annotation an `bootstrap.yml` with application name:
 ``` yml
@@ -157,49 +149,20 @@ The logs are as follows, notice the `[appname,traceId,spanId,exportable]` entrie
 
 An advanced security configuration is beyond the scope of this proof-of-concept project. For a more realistic simulation of a real system, consider to use https, JCE keystore to encrypt Microservices passwords and Config server properties content (see [documentation](http://cloud.spring.io/spring-cloud-config/spring-cloud-config.html#_security) for details).
 
-## Infrastructure automation
+#### Antes de começar
+- Instale Docker e Docker Compose. [Config Docker](https://www.digitalocean.com/community/tutorials/como-instalar-e-usar-o-docker-no-ubuntu-16-04-pt)
+- Construa o projeto com maven utilizando o seguinte comando: `mvn clean package -DskipTests`
 
-Deploying microservices, with their interdependence, is much more complex process than deploying monolithic application. It is important to have fully automated infrastructure. We can achieve following benefits with Continuous Delivery approach:
+#### Executando o docker
+Desta forma todas as imagens utilizadas serão baixado do docker hub.
+Entre na pasta raiz onde foi realizado o clone do projeto onde está localizado o arquivo `docker-compose.yml` em seguida para construir as imagens `docker-compose build` e em seguinte `docker-compose up`
 
-- The ability to release software anytime
-- Any build could end up being a release
-- Build artifacts once - deploy as needed
 
-Here is a simple Continuous Delivery workflow, implemented in this project:
-
-<img width="880" src="https://cloud.githubusercontent.com/assets/6069066/14159789/0dd7a7ce-f6e9-11e5-9fbb-a7fe0f4431e3.png">
-
-In this [configuration](https://github.com/sqshq/PiggyMetrics/blob/master/.travis.yml), Travis CI builds tagged images for each successful git push. So, there are always `latest` image for each microservice on [Docker Hub](https://hub.docker.com/r/sqshq/) and older images, tagged with git commit hash. It's easy to deploy any of them and quickly rollback, if needed.
-
-## How to run all the things?
-
-Keep in mind, that you are going to start 8 Spring Boot applications, 4 MongoDB instances and RabbitMq. Make sure you have `4 Gb` RAM available on your machine. You can always run just vital services though: Gateway, Registry, Config, Auth Service and Account Service.
-
-#### Before you start
-- Install Docker and Docker Compose.
-- Export environment variables: `CONFIG_SERVICE_PASSWORD`, `NOTIFICATION_SERVICE_PASSWORD`, `STATISTICS_SERVICE_PASSWORD`, `ACCOUNT_SERVICE_PASSWORD`, `MONGODB_PASSWORD` (make sure they were exported: `printenv`)
-- Make sure to build the project: `mvn package [-DskipTests]`
-
-#### Production mode
-In this mode, all latest images will be pulled from Docker Hub.
-Just copy `docker-compose.yml` and hit `docker-compose up`
-
-#### Development mode
-If you'd like to build images yourself (with some changes in the code, for example), you have to clone all repository and build artifacts with maven. Then, run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
-
-`docker-compose.dev.yml` inherits `docker-compose.yml` with additional possibility to build images locally and expose all containers ports for convenient development.
-
-#### Important endpoints
+#### Importantes endpoints
 - http://localhost:80 - Gateway
 - http://localhost:8761 - Eureka Dashboard
 - http://localhost:9000/hystrix - Hystrix Dashboard (Turbine stream link: `http://turbine-stream-service:8080/turbine/turbine.stream`)
 - http://localhost:15672 - RabbitMq management (default login/password: guest/guest)
 
 #### Notes
-All Spring Boot applications require already running [Config Server](https://github.com/sqshq/PiggyMetrics#config-service) for startup. But we can start all containers simultaneously because of `depends_on` docker-compose option.
-
-Also, Service Discovery mechanism needs some time after all applications startup. Any service is not available for discovery by clients until the instance, the Eureka server and the client all have the same metadata in their local cache, so it could take 3 heartbeats. Default heartbeat period is 30 seconds.
-
-## Contributions welcome!
-
-PiggyMetrics is open source, and would greatly appreciate your help. Feel free to suggest and implement improvements.
+Além disso, o mecanismo de Descoberta de Serviço precisa de algum tempo após a inicialização de todos os aplicativos. Qualquer serviço não está disponível para descoberta pelos clientes até que a instância, o servidor Eureka e o cliente tenham todos os mesmos metadados em seu cache local.
