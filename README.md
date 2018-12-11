@@ -60,41 +60,19 @@ Eureka fornece uma interface simples, onde você pode rastrear serviços em exec
 
 ### Load balancer, Circuit breaker e Http client
 
-Netflix OSS provides another great set of tools. 
+Netflix OSS
 
 #### Ribbon
-Ribbon is a client side load balancer which gives you a lot of control over the behaviour of HTTP and TCP clients. Compared to a traditional load balancer, there is no need in additional hop for every over-the-wire invocation - you can contact desired service directly.
-
-Out of the box, it natively integrates with Spring Cloud and Service Discovery. [Eureka Client](https://github.com/sqshq/PiggyMetrics#service-discovery) provides a dynamic list of available servers so Ribbon could balance between them.
+Ribbon é um balanceador de carga do lado do cliente que lhe dá muito controle sobre o comportamento de clientes HTTP e TCP.
 
 #### Hystrix
-Hystrix is the implementation of [Circuit Breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html), which gives a control over latency and failure from dependencies accessed over the network. The main idea is to stop cascading failures in a distributed environment with a large number of microservices. That helps to fail fast and recover as soon as possible - important aspects of fault-tolerant systems that self-heal.
-
-Besides circuit breaker control, with Hystrix you can add a fallback method that will be called to obtain a default value in case the main command fails.
-
-Moreover, Hystrix generates metrics on execution outcomes and latency for each command, that we can use to [monitor system behavior](https://github.com/sqshq/PiggyMetrics#monitor-dashboard).
+Hystrix é uma implementação [Circuit Breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html), que fornece controle sobre a latência e falha de dependências acessadas pela rede. A idéia principal é parar as falhas em cascata em um ambiente distribuído com um grande número de microsserviços.
 
 #### Feign
-Feign is a declarative Http client, which seamlessly integrates with Ribbon and Hystrix. Actually, with one `spring-cloud-starter-feign` dependency and `@EnableFeignClients` annotation you have a full set of Load balancer, Circuit breaker and Http client with sensible ready-to-go default configuration.
-
-Here is an example from Account Service:
-
-``` java
-@FeignClient(name = "statistics-service")
-public interface StatisticsServiceClient {
-
-	@RequestMapping(method = RequestMethod.PUT, value = "/statistics/{accountName}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	void updateStatistics(@PathVariable("accountName") String accountName, Account account);
-
-}
-```
-
-- Everything you need is just an interface
-- You can share `@RequestMapping` part between Spring MVC controller and Feign methods
-- Above example specifies just desired service id - `statistics-service`, thanks to autodiscovery through Eureka (but obviously you can access any resource with a specific url)
+Feign é um Http client. Actually, com uma dependência`spring-cloud-starter-feign` e uma anotação `@EnableFeignClients`.
 
 
-### Distributed tracing
+### tracing logs distribuídos
 
 A análise de problemas em sistemas distribuídos pode ser difícil, por exemplo, solicitações de rastreamento que se propagam de um microsserviço para outro.
 
