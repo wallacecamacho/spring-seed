@@ -1,0 +1,140 @@
+version: '2.1'
+services:
+  rabbitmq:
+    env_file:
+      - .env
+    image: rabbitmq:3-management
+    restart: "no"
+    ports:
+      - 15672:15672
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  config:
+    build:
+      context: ./config
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: "no"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  registry:
+    build:
+      context: ./registry
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 8761:8761
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 80:4000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  account-mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+    restart: "no"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 9000:8080
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  turbine-stream-service:
+    build:
+      context: ./turbine-stream-service
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+    - 8989:8989
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  example-service:
+    build:
+      context: ./example-service
+      dockerfile: Dockerfile
+    ports:
+      - 6000:6000
+    env_file:
+      - .env
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      ACCOUNT_SERVICE_PASSWORD: $ACCOUNT_SERVICE_PASSWORD
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+    restart: "no"
+    depends_on:
+      config:
+        condition: service_healthy
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+
