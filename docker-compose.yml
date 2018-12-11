@@ -64,7 +64,7 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  account-mongodb:
+  example-mongodb:
     build:
       context: ./mongodb
       dockerfile: Dockerfile

@@ -3,57 +3,23 @@
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/sqshq/PiggyMetrics/blob/master/LICENCE)
 [![Join the chat at https://gitter.im/sqshq/PiggyMetrics](https://badges.gitter.im/sqshq/PiggyMetrics.svg)](https://gitter.im/sqshq/PiggyMetrics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Piggy Metrics
+# Spring-Seed
 
-**A simple way to deal with personal finances**
+**Uma aplicação de referência**
 
 This is a proof-of-concept application, which demonstrates [Microservice Architecture Pattern](http://martinfowler.com/microservices/) using Spring Boot, Spring Cloud and Docker.
 With a pretty neat user interface, by the way.
+
+Esta é uma aplicação de prova de conceito, que demonstra o [Padrão de Arquitetura de Microserviços](http://martinfowler.com/microservices/) usando Spring Boot, Spring Cloud e Docker. Com uma interface simples em angular 7.
 
 ![](https://cloud.githubusercontent.com/assets/6069066/13864234/442d6faa-ecb9-11e5-9929-34a9539acde0.png)
 ![Piggy Metrics](https://cloud.githubusercontent.com/assets/6069066/13830155/572e7552-ebe4-11e5-918f-637a49dff9a2.gif)
 
 ## Functional services
 
-PiggyMetrics was decomposed into three core microservices. All of them are independently deployable applications, organized around certain business domains.
+Springseed tem um simples exemplo de serviço. Serviço independente utilizando um banco de dados mongo para um serviço específico.
 
-<img width="880" alt="Functional services" src="https://cloud.githubusercontent.com/assets/6069066/13900465/730f2922-ee20-11e5-8df0-e7b51c668847.png">
-
-#### Account service
-Contains general user input logic and validation: incomes/expenses items, savings and account settings.
-
-Method	| Path	| Description	| User authenticated	| Available from UI
-------------- | ------------------------- | ------------- |:-------------:|:----------------:|
-GET	| /accounts/{account}	| Get specified account data	|  | 	
-GET	| /accounts/current	| Get current account data	| × | ×
-GET	| /accounts/demo	| Get demo account data (pre-filled incomes/expenses items, etc)	|   | 	×
-PUT	| /accounts/current	| Save current account data	| × | ×
-POST	| /accounts/	| Register new account	|   | ×
-
-
-#### Statistics service
-Performs calculations on major statistics parameters and captures time series for each account. Datapoint contains values, normalized to base currency and time period. This data is used to track cash flow dynamics in account lifetime.
-
-Method	| Path	| Description	| User authenticated	| Available from UI
-------------- | ------------------------- | ------------- |:-------------:|:----------------:|
-GET	| /statistics/{account}	| Get specified account statistics	          |  | 	
-GET	| /statistics/current	| Get current account statistics	| × | × 
-GET	| /statistics/demo	| Get demo account statistics	|   | × 
-PUT	| /statistics/{account}	| Create or update time series datapoint for specified account	|   | 
-
-
-#### Notification service
-Stores users contact information and notification settings (like remind and backup frequency). Scheduled worker collects required information from other services and sends e-mail messages to subscribed customers.
-
-Method	| Path	| Description	| User authenticated	| Available from UI
-------------- | ------------------------- | ------------- |:-------------:|:----------------:|
-GET	| /notifications/settings/current	| Get current account notification settings	| × | ×	
-PUT	| /notifications/settings/current	| Save current account notification settings	| × | ×
-
-#### Notes
-- Each microservice has it's own database, so there is no way to bypass API and access persistance data directly.
-- In this project, I use MongoDB as a primary database for each service. It might also make sense to have a polyglot persistence architecture (сhoose the type of db that is best suited to service requirements).
-- Service-to-service communication is quite simplified: microservices talking using only synchronous REST API. Common practice in a real-world systems is to use combination of interaction styles. For example, perform synchronous GET request to retrieve data and use asynchronous approach via Message broker for create/update operations in order to decouple services and buffer messages. However, this brings us to the [eventual consistency](http://martinfowler.com/articles/microservice-trade-offs.html#consistency) world.
+<img width="880" alt="Functional services" src="https://user-images.githubusercontent.com/1315080/49801704-08a4a480-fd32-11e8-92a3-1a5bcbac6493.png">
 
 ## Infrastructure services
 There's a bunch of common patterns in distributed systems, which could help us to make described core services work. [Spring cloud](http://projects.spring.io/spring-cloud/) provides powerful tools that enhance Spring Boot applications behaviour to implement those patterns. I'll cover them briefly.
